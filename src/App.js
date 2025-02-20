@@ -1,4 +1,4 @@
-import { Component, useState } from "react";
+import { Component, useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
 import "./App.css";
 import "./bootstrap.min.css";
@@ -9,6 +9,16 @@ import "./bootstrap.min.css";
 //             autoplay: false,
 //             slide: 0,
 //         };
+//     }
+
+//     // life-cycle-HOOKS
+
+//     componentDidMount() {
+//         document.title = `slide: ${this.state.slide}`;
+//     }
+
+//     componentDidUpdate() {
+//         document.title = `slide: ${this.state.slide}`;
 //     }
 
 //     changeSlide = (i) => {
@@ -65,17 +75,26 @@ import "./bootstrap.min.css";
 //     }
 // }
 
-const calcValue = () => {
-    console.log("random");
-
-    return Math.random() * (50 - 1) + 1;
-};
-
 const Slider = (props) => {
     // HOOKS
 
-    const [slide, setSlide] = useState(() => calcValue());
+    // useEffect
+
+    const [slide, setSlide] = useState(0);
     const [autoplay, setAutoplay] = useState(false);
+
+    function logging() {
+        console.log("log!");
+    }
+
+    useEffect(() => {
+        console.log("effect update");
+        document.title = `slide: ${slide}`;
+    }, [slide]); // внутрь массива прописываем зависимости в данном случае slide
+
+    useEffect(() => {
+        console.log("autoplay");
+    }, [autoplay]);
 
     // HOW UPDATE STATE IN HOOKS :
 
@@ -139,7 +158,14 @@ const Slider = (props) => {
 };
 
 function App() {
-    return <Slider />;
+    const [slider, setSlider] = useState(true);
+
+    return (
+        <>
+            <button onClick={() => setSlider(false)}>delete component</button>
+            {slider ? <Slider /> : null}
+        </>
+    );
 }
 
 export default App;
