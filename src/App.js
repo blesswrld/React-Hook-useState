@@ -1,4 +1,4 @@
-import { Component, useState, useEffect } from "react";
+import { Component, useState, useEffect, useCallback } from "react";
 import { Container } from "react-bootstrap";
 import "./App.css";
 import "./bootstrap.min.css";
@@ -75,17 +75,30 @@ import "./bootstrap.min.css";
 //     }
 // }
 
+// Функция которая будет динамически вставлять изображение
+// const getSomeImages = () => {
+//     console.log("fetching");
+//     return [
+//         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTo9PcozhtB06i2oeMBCwMBLqP3W4WI4MhXg&s",
+//         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7zzk5aB4UM8D8km8kr_e8sATZbsJpkswm5A&s",
+//     ];
+// };
+
 const Slider = (props) => {
-    // HOOKS
-
-    // useEffect
-
     const [slide, setSlide] = useState(0);
     const [autoplay, setAutoplay] = useState(false);
 
-    function logging() {
-        console.log("log!");
-    }
+    const getSomeImages = useCallback(() => {
+        console.log("fetching");
+        return [
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTo9PcozhtB06i2oeMBCwMBLqP3W4WI4MhXg&s",
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7zzk5aB4UM8D8km8kr_e8sATZbsJpkswm5A&s",
+        ];
+    }, []);
+
+    // HOOKS
+
+    // useEffect
 
     useEffect(() => {
         console.log("effect update");
@@ -121,11 +134,20 @@ const Slider = (props) => {
     return (
         <Container>
             <div className="slider w-50 m-auto">
-                <img
-                    className="d-block w-100"
-                    src="https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg"
-                    alt="slide"
-                />
+                {/* {getSomeImages().map((url, i) => {
+                    return (
+                        // Динамически вставляем изображение по url
+                        <img
+                            key={i}
+                            className="d-block w-100"
+                            src={url}
+                            alt="slide"
+                        />
+                    );
+                })} */}
+
+                {/* Передаем функцию внутрь дочернего компонента (Slider) */}
+                <Slide getSomeImages={getSomeImages} />
                 <div className="text-center mt-5">
                     Active slide {slide} <br /> {autoplay ? "auto" : null}
                 </div>
@@ -154,6 +176,29 @@ const Slider = (props) => {
                 </div>
             </div>
         </Container>
+    );
+};
+
+const Slide = ({ getSomeImages }) => {
+    const [images, setImages] = useState([]);
+
+    useEffect(() => {
+        setImages(getSomeImages());
+    }, [getSomeImages]);
+
+    return (
+        <>
+            {images.map((url, i) => {
+                return (
+                    <img
+                        key={i}
+                        className="d-block w-100"
+                        src={url}
+                        alt="slide"
+                    />
+                );
+            })}
+        </>
     );
 };
 
